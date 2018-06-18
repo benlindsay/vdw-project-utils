@@ -28,7 +28,7 @@ def dir_list_to_sims_df(dir_list, col_dict_fn, sort_dirs=True):
         col_dict = col_dict_fn(d)
         r.update(col_dict)
         dict_list.append(r)
-    sims_df = pd.DataFrame(dict_list).sort_values(['round_dir', 'sim_dir'])
+    sims_df = pd.DataFrame(dict_list).sort_values(['round', 'sim_dir'])
     if not 'Rp' in sims_df.columns:
         raise ValueError("'Rp' is a required column")
     return sims_df
@@ -75,7 +75,7 @@ def calc_gr(sims_df, gr_exe_path=None, verbosity=0, gr_fname='gr_skp1.dat',
 
 def sims_df_to_b2_df(sims_df, b2_df_index, keep_cols=None, gr_fname_fmt='gr_skp1_{:02d}.dat'):
     b2_df = pd.DataFrame(index=sims_df.groupby(b2_df_index).count().index)
-    for group_name, group in sims_df.groupby(b2_df_index):
+    for group_name, group in sims_df.groupby(b2_df_index, sort=False):
         Rp = group['Rp'].values[0]
         if not np.allclose(group['Rp'], Rp):
             print('Rp values in group do not match')
